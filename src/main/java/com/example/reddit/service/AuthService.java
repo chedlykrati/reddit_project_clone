@@ -1,6 +1,7 @@
 package com.example.reddit.service;
 
 
+import com.example.reddit.dto.LoginRequest;
 import com.example.reddit.dto.RegisterRequest;
 import com.example.reddit.exception.springRedditException;
 import com.example.reddit.model.NotificationEmail;
@@ -10,6 +11,8 @@ import com.example.reddit.repository.UserRepository;
 import com.example.reddit.repository.VerificationTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +29,11 @@ public class AuthService {
 
     //@Autowired
     private final PasswordEncoder passwordEncoder;
-
     //@Autowired
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final MailService mailService;
+    private final AuthenticationManager authenticationManager;
 
 //@Transactional annotation is the metadata that specifies the semantics of the transactions on a method. We have two ways to rollback a transaction: declarative and programmatic.
     @Transactional
@@ -81,4 +84,9 @@ public class AuthService {
     }
 
 
+    public void login(LoginRequest loginRequest) {
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername() ,
+        loginRequest.getPassword()));
+    }
 }
