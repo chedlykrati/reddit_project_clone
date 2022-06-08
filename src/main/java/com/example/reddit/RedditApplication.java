@@ -9,7 +9,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class RedditApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RedditApplication.class, args);
+		//SpringApplication.run(RedditApplication.class, args);
+		SpringApplication.run(com.example.reddit.RedditApplication.class,args);
 	}
 
 }
