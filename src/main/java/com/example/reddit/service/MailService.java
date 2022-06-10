@@ -1,7 +1,7 @@
 package com.example.reddit.service;
 
 
-import com.example.reddit.exception.springRedditException;
+import com.example.reddit.exception.SpringRedditException;
 import com.example.reddit.model.NotificationEmail;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class MailService {
             log.info("Activation mail sent !");
         }catch (MailException e){
             log.error("Exception occured when sending mail" , e);
-            throw new springRedditException("Exception occured when sending mail to " + notificationEmail.getRecipient());
+            throw new SpringRedditException("Exception occured when sending mail to " + notificationEmail.getRecipient());
 
         }
 
