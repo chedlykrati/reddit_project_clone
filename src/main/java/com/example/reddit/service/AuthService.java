@@ -3,6 +3,7 @@ package com.example.reddit.service;
 
 import com.example.reddit.dto.AuthenticationResponse;
 import com.example.reddit.dto.LoginRequest;
+import com.example.reddit.dto.RefreshTokenRequest;
 import com.example.reddit.dto.RegisterRequest;
 import com.example.reddit.exception.SpringRedditException;
 import com.example.reddit.model.NotificationEmail;
@@ -40,6 +41,7 @@ public class AuthService {
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
     //@Transactional annotation is the metadata that specifies the semantics of the transactions on a method. We have two ways to rollback a transaction: declarative and programmatic.
     @Transactional
@@ -98,7 +100,13 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String token = jwtProvider.generateToken(authenticate);
-        return new AuthenticationResponse(token, loginRequest.getUsername());
+        //return new AuthenticationResponse(token, loginRequest.getUsername());
+        return AuthenticationResponse.builder()
+                .authenticationToken(token)
+                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .username(loginRequest.getUsername())
+                .build();
     }
 
     public User getCurrentUser() {
@@ -106,6 +114,18 @@ public class AuthService {
         Jwt principal = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userRepository.findByUsername(principal.getSubject())
                 .orElseThrow(()->new UsernameNotFoundException("Username not found " + principal));
+
+    }
+
+    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+       refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
+       String token = jwtProvider.generateTokenWithUserName(refreshTokenRequest.getUsername());
+       return AuthenticationResponse.builder()
+               .refreshToken(refreshTokenRequest.getRefreshToken())
+               .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+               .username(refreshTokenRequest.getUsername())
+               .build();
+
 
     }
 }

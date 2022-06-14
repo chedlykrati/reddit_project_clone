@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostRequest {
     private Long postId;
-    private String subreddit;
-    private String user;
+    //private String subreddit;
+    //private String user;
     private String subredditName;
     private String postName;
     private String url;

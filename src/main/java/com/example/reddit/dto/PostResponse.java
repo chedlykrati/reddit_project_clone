@@ -14,6 +14,10 @@ public class PostResponse {
     public String postName;
     public String url;
     public String description;
-
+    private Integer voteCount;
+    private Integer commentCount;
+    private String duration;    //related time of post creation time with library call timeago https://github.com/marlonlom/timeago
+    private boolean upVote;
+    private boolean downVote;
 
 }
